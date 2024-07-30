@@ -41,7 +41,7 @@ func check(err error) {
 func main() {
 	flag.StringVar(&bucket, "bucket", "indexsupply.com", "s3 bucket")
 	flag.BoolVar(&deploy, "deploy", false, "deploy to s3")
-	flag.StringVar(&dir, "dir", "indexsupply.com", "root dir")
+	flag.StringVar(&dir, "dir", "src", "root dir")
 	flag.StringVar(&distid, "distid", "E100U1X0OYQONF", "cloudfront distribution")
 	flag.Parse()
 
