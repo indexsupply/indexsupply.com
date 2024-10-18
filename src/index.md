@@ -26,14 +26,13 @@ Customer <a href="/customer-case-studies">case studies</a>:
 
 </a>
 
-What we offer:
+What we offer
 
+- Hosted [SQL API](https://www.indexsupply.net) for instant indexing
 - Engineering services for custom indexing
-- Ethereum to Postgres indexer: **[Shovel](/shovel)**
-- Premium, on-call support for Shovel
+- Open Source Ethereum to Postgres indexer: **[Shovel](/shovel)**
 
-Email <a href="mailto:info@indexsupply.com">info@indexsupply.com</a> to get started
+Updates
 
-Read the latest [company update](/update-1)
-
-Shovel [1.0 release!](/shovel/1.0)
+- [Company Update](/update-1) March 2024
+- Shovel [1.0 release!](/shovel/1.0)
