@@ -1,97 +1,490 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title></title>
-	<meta charset="utf-8">
-	<meta name="Description" content="Software for indexing Ethereum.">
-	<meta name=viewport content=initial-scale=1>
-	<style>
-		html { overflow-x:hidden; }
-		body {
-			overflow-x:hidden;
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Index Supply</title>
+        <style>
+            body {
+                font-family: Times New Roman;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                color: blue;
+                text-decoration: none;
+            }
+            .navigation {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 15%;
+                font-size: large;
+                display: flex;
+                flex-direction: column;
+            }
+            .navigation div {
+                padding: 10px 0 0 10px;
+            }
+            .navigation h2 {
+                font-size: xx-large;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                margin: 0;
+                padding: 0 0 0 10px;
+            }
+            .header {
+                width: 100%;
+                margin: 0 0 0 0;
+            }
+            .header h1 {
+                width: 100%;
+                white-space: nowrap;
+                /* size fills horizontal space*/
+                font-size: 83.5px;
+                font-weight: 900;
+                letter-spacing: -3px;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                margin: 0;
+            }
+            .header h1 a {
+                color: #000000;
+                text-decoration: none;
+            }
+            .events {
+                resize: none;
+                border: none;
+                width: 80%;
+                height: 20px;
+                font-size: large;
+                font-family: monospace;
+            }
+            .query {
+                resize: none;
+                border: none;
+                width: 80%;
+                height: 75px;
+                font-size: large;
+                font-family: monospace;
+            }
+            .response table {
+                table-layout: fixed;
+                width: 60%;
+            }
+            .response th {
+                font-size: medium;
+                padding-bottom: 5px;
+                text-align: left;
+            }
+            .response td {
+                max-width: 200px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .point {
+                margin: 0 0 30px 0;
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .point h2 {
+                font-size: 2.5em;
+                font-weight: normal;
+                width: 100%;
+                margin-bottom: 0;
+            }
+            .point p {
+                font-size: 1.3em;
+            }
+            #simple {
+                display: block;
+            }
+            #latency {
+                width: 100%;
+            }
+            #latency span {
+                color: green;
+                font-family: monospace;
+                font-size: 3em;
+            }
+            #api {
+                display: block;
+            }
+            #cost {
+                display: block;
+            }
+            #powerful {
+                display: block;
+            }
+            #menu {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: flex-start;
+                flex-grow: 1;
+                gap: 20px;
+                margin-top: 30px;
+            }
+            #menu h3 {
+                text-align: center;
+                padding-bottom: 12px;
+                border-bottom: 2px solid black;
+            }
+            .option.current {
+                border: 2px dotted black;
+            }
+            .option.selected {
+                border: 2px solid green;
+            }
+            .option {
+                width: 100%;
+                border: 1px solid gray;
+                box-sizing: border-box;
+                padding: 0 0 10px 0;
+            }
+            .option.left {
+                box-shadow:
+                    rgba(0, 255, 127, 0.4) -5px 5px,
+                    rgba(0, 255, 127, 0.3) -10px 10px,
+                    rgba(0, 255, 127, 0.2) -15px 15px,
+                    rgba(0, 255, 127, 0.1) -20px 20px,
+                    rgba(0, 255, 127, 0.05) -25px 25px;
+            }
+            .option.middle {
+                box-shadow:
+                    rgba(0, 255, 127, 0.4) 0px 5px,
+                    rgba(0, 255, 127, 0.3) 0px 10px,
+                    rgba(0, 255, 127, 0.2) 0px 15px,
+                    rgba(0, 255, 127, 0.1) 0px 20px,
+                    rgba(0, 255, 127, 0.05) 0px 25px;
+            }
+            .option.right {
+                box-shadow:
+                    rgba(0, 255, 127, 0.4) 5px 5px,
+                    rgba(0, 255, 127, 0.3) 10px 10px,
+                    rgba(0, 255, 127, 0.2) 15px 15px,
+                    rgba(0, 255, 127, 0.1) 20px 20px,
+                    rgba(0, 255, 127, 0.05) 25px 25px;
+            }
+            .option ul {
+                padding-inline-start: 20px;
+            }
+            .option li {
+                padding-left: 0px;
+            }
+            .option .price {
+                width: 100%;
+                text-align: center;
+                font-size: large;
+            }
+            .highlight {
+                background-color: lightyellow;
+                transition: background-color 0.25s ease-in-out;
+            }
+            .response {
+                padding: 5px;
+                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+            }
+            .terminal {
+                font-size: small;
+                padding: 0 5px 5px 5px;
+                border-top: 20px solid black;
+                border-radius: 10px;
+                box-shadow:
+                    rgba(17, 17, 26, 0.1) 0px 4px 16px,
+                    rgba(17, 17, 26, 0.1) 0px 8px 24px,
+                    rgba(17, 17, 26, 0.1) 0px 16px 56px;
+                color: whitesmoke;
+                background-color: #28282b;
+            }
+            .shadow {
+                padding: 5px;
+                box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+            }
+            .hidden {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1><a href="/">Index Supply</a></h1>
+        </div>
+        <div class="navigation">
+            <h2><a href="https://www.indexsupply.net/login">Sign Up</a></h2>
+            <div>
+                <a href="/about">About</a>, <a href="https://www.indexsupply.net/docs">Docs</a>,
+                <a href="https://www.indexsupply.net">Query</a>
+            </div>
+        </div>
+        <main>
+            <div id="simple" class="point">
+                <form action="https://www.indexsupply.net/query" id="simple-request" method="POST">
+                    <h2>🗄️ It's Simple</h2>
+                    <p>There is <strong>no</strong> indexing step because the entire chain is already indexed.</p>
+                    <div class="shadow">
+                        <textarea class="events" type="text" spellcheck="false">Transfer(address indexed from, address indexed to, uint value)</textarea>
+                        <textarea class="query" type="text" spellcheck="false">
+select block_num block, "from", "to"
+from transfer
+order by block_num desc
+limit 3
+                        </textarea>
+                    </div>
+                </form>
+                <p>An Event Signature and a SQL Query is all you need to instantly access indexed data.</p>
+                <div class="response">
+                    <table>
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="latency" class="point">
+                <h2>🚄 It's Fast</h2>
+                <p>Our entire stack is dialed for performance. Your queries will be fast:</p>
+                <span></span>
+            </div>
+            <div id="live" class="point">
+                <h2>📡 It's Live</h2>
+                <p>Any query can be turned into a <strong>Live Query</strong>. Keep your end-user's browser in sync.</p>
+                <textarea class="events hidden">Transfer(address indexed from, address indexed to, uint value)</textarea>
+                <textarea class="query hidden">select block_num, "from", "to" from transfer order by block_num desc limit 1</textarea>
+                <div class="response">
+                    <table>
+                        <thead></thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="api" class="point">
+                <h2>🧰 It's an API</h2>
+                <p>A simple JSON over HTTP API that is fast and easy to use.</p>
+                <div class="terminal">
+                    <pre>
+% curl -G https://api.indexsupply.net/query \
+    --data-urlencode 'chain=8453' \
+    --data-urlencode 'query=select "from", "to", tokens from transfer limit 1' \
+    --data-urlencode 'event_signatures=Transfer(address indexed from, address indexed to, uint tokens)' \
+    | jq .
 
-			font-family: Times New Roman;
-			font-size: 0.95em;
-			letter-spacing: -0.005em;
-			line-height: 1.58;
+{
+    "block_height": 18479546,
+    "result": [[
+        [
+            "from",
+            "to",
+            "tokens"
+        ],
+        [
+            "0x0000000000000000000000000000000000000000",
+            "0xdaabdaac8073a7dabdc96f6909e8476ab4001b34",
+            "0"
+        ]
+    ]]
+}
+                    </pre>
+                </div>
+            </div>
+            <div id="powerful" class="point">
+                <h2>🧬 It's Powerful</h2>
+                <p>Harness the power of SQL with JOINS, SUM, MAX, WHERE, and much more!</p>
+                <div class="shadow">
+                    <code>
+                        <pre>
+select t1."to", t1.tokenId, t1.block_num
+from transfer t1
+left join transfer t2
+on t1.tokenId = t2.tokenId
+and t1.block_num < t2.block_num
+and t1.address = t2.address
+where t1.address = 0xE81b94b09B9dE001b75f2133A0Fb37346f7E8BA4
+and t2.tokenId is null
+                    </pre
+                        >
+                    </code>
+                </div>
+            </div>
+            <div id="cost" class="point">
+                <h2>💰 It's Low Cost</h2>
+                <p>We engineered a system that keeps cost low and we pass the savings on to you!</p>
+                <div id="menu">
+                    <div class="option left" name="indie">
+                        <h3>Indie</h3>
+                        <ul>
+                            <li>2 Chains</li>
+                            <li>5 requests per second per client</li>
+                            <li>100 connected clients</li>
+                            <li>Best Effort Support</li>
+                        </ul>
+                        <div class="price">$20 per month</div>
+                    </div>
+                    <div class="option middle" name="pro">
+                        <h3>Pro</h3>
+                        <ul>
+                            <li>Unlimited Chains</li>
+                            <li>10 requests per second per client</li>
+                            <li>1,000 connected clients</li>
+                            <li>Same Day Support</li>
+                        </ul>
+                        <div class="price">$100 per month</div>
+                    </div>
+                    <div class="option right" name="extreme">
+                        <h3>Dedicated</h3>
+                        <ul>
+                            <li>Custom Chains</li>
+                            <li>Custom Tuned Performance</li>
+                            <li>Custom Database Indexing</li>
+                            <li>On-call Support</li>
+                        </ul>
+                        <div class="price">Starting at $1,000 per month</div>
+                    </div>
+                </div>
+            </div>
+            <div id="get-started" class="point">
+                <h2>Get Started</h2>
+                <p>Sign up for an account and start making queries today!</p>
+            </div>
+        </main>
+    </body>
+    <script>
+        function addHeaderRow(thead, row) {
+            let tr = thead.insertRow(0);
+            row.forEach((col, i) => {
+                const th = document.createElement("th");
+                th.textContent = col;
+                tr.appendChild(th);
+            });
+        }
 
-			max-width: 700px;
-			margin: 0 auto;
-			padding: 0 5px 50px 5px;
-		}
-		a:link {color: #24303d}
-		a:visited {color: #24303d}
-		h1 {
-			font-weight: 600;
-		}
-		h1 a {
-			text-decoration: none;
-		}
-		h2 {
-			font-weight: 400;
-			margin: 5px 0 5px 0;
-		}
-		main {
-			max-width: 500px;
-		}
-		img {
-			background: transparent;
-			max-width: 100%;
-		}
-		.logos img {
-			background: transparent;
-			padding: 0 5px 5px 0;
-			width: 100%;
-			height: auto;
-			max-width: 100px;
-		}
-		.logos {
-			display: flex;
-			flex-wrap: wrap;
-		}
-		ul {
-			list-style-type: "- ";
-		}
-		pre {
-			margin: 0 0 20px 0;
-			padding: 5px;
-			background-color: whitesmoke;
-			overflow: scroll;
-		}
-		details {
-			margin: 10px 0 0 0;
-		}
-		summary h2 {
-			display: inline;
-		}
-		.footer {
-			font-size: small;
-		}
-		@media (prefers-color-scheme: dark) {
-			body {
-				background-color: rgb(40,40,41);
-				color: rgb(220,220,220);
-			}
-			a:link {color: rgb(220,220,220);}
-			a:visited {color: rgb(220,220,220);}
-			img { background-color: whitesmoke;}
-        	pre {background-color: #202020;}
-		}
-	</style>
-</head>
-<body>
-{{Body}}
-<hr />
-<div class="footer">
-	<a href="/">Home</a>
-	<span>,</span>
-	<a href="/about">About</a>
-	<span>,</span>
-	<a href="/shovel/docs">Shovel Docs</a>
-	<span>,</span>
-	<a href="https://twitter.com/indexsupply">@indexsupply</a>
-	<span>,</span>
-	<a href="https://github.com/indexsupply/code">github.com/indexsupply</a>
-</div>
-</body>
+        function addRow(tbody, rows, shouldAppend) {
+            rows.forEach((row) => {
+                let tr = document.createElement("tr");
+                row.forEach((col, i) => {
+                    let td = document.createElement("td");
+                    td.textContent = col;
+                    tr.appendChild(td);
+                });
+                if (shouldAppend) {
+                    tbody.appendChild(tr);
+                } else {
+                    tbody.insertBefore(tr, tbody.rows[0]);
+                }
+                tr.classList.add("highlight");
+                setTimeout(() => {
+                    tr.classList.remove("highlight");
+                }, 500);
+            });
+            while (tbody.rows.length > 3) {
+                //-1 removes the last row of the table
+                tbody.deleteRow(-1);
+            }
+        }
+
+        function apiURL(path, params = new URLSearchParams()) {
+            params.set("chain", 8543);
+            return `https://api.indexsupply.net${path}?${params}`;
+        }
+
+        function form2JSON(parent) {
+            let events = parent.querySelector(".events").value.split("\n");
+            let query = parent.querySelector(".query").value;
+            return [{ event_signatures: events, query: query }];
+        }
+
+        function form2queryParams(parent) {
+            let params = new URLSearchParams();
+            let query = parent.querySelector(".query").value;
+            params.append("query", query);
+            let events = parent.querySelector(".events").value.split("\n");
+            events.forEach((sig) => {
+                params.append("event_signatures", sig.trim());
+            });
+            params.set("chain", 8543);
+            params.set("block_height", blockHeight);
+            return params;
+        }
+
+        function resetResponse() {
+            document.querySelectorAll(".response table tr").forEach((row) => row.remove());
+        }
+
+        let blockHeight = 0;
+        function updateBlockHeight(height, latency) {
+            blockHeight = height;
+            if (latency) {
+                document.querySelector("#latency span").style.display = "inline";
+                document.querySelector("#latency span").textContent = latency;
+            }
+        }
+
+        let sseHandler = {};
+        function closeHandler() {
+            if ("close" in sseHandler) {
+                sseHandler.close();
+            }
+        }
+
+        async function submitQuery(event) {
+            if (event) {
+                event.preventDefault();
+            }
+            resetResponse();
+            closeHandler();
+            const response = await fetch(apiURL("/query"), {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(form2JSON(document.getElementById("simple"))),
+            });
+            if (!response.ok) {
+                const { message } = await response.json();
+                console.log(message);
+            } else {
+                const data = await response.json();
+                let height = data["block_height"];
+                let result = data["result"][0];
+                console.log(`downloaded ${result.length} records`);
+                if (result.length > 0) {
+                    let colNames = result.shift();
+                    addHeaderRow(document.querySelector("#simple .response table thead"), colNames);
+                    addHeaderRow(document.querySelector("#live .response table thead"), colNames);
+                    addRow(document.querySelector("#simple .response table tbody"), result.slice(0, 3), true);
+                    addRow(document.querySelector("#live .response table tbody"), result.slice(0, 3), true);
+                    updateBlockHeight(height, response.headers.get("Latency"));
+                    startHandler();
+                } else {
+                    printInfo("no rows");
+                }
+            }
+        }
+
+        function startHandler() {
+            let liveDiv = document.getElementById("live");
+            console.log(`sse start: ${blockHeight}`);
+            sseHandler = new EventSource(apiURL("/query-live", form2queryParams(liveDiv)));
+            sseHandler.onmessage = function (event) {
+                let data = JSON.parse(event.data);
+                let newHeight = data["block_height"];
+                let result = data["result"][0];
+                console.log(`sse latest: ${newHeight}`);
+                if (newHeight <= blockHeight) {
+                    console.log("sse nothing new");
+                    return;
+                }
+                result.shift();
+                addRow(liveDiv.querySelector(".response table tbody"), result.reverse(), false);
+                updateBlockHeight(newHeight);
+            };
+            sseHandler.onerror = function (e) {
+                console.log(`sse error: `, e);
+            };
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            submitQuery();
+        });
+    </script>
 </html>

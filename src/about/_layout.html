@@ -1,92 +1,59 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title></title>
-	<meta charset="utf-8">
-	<meta name="Description" content="Software for indexing Ethereum.">
-	<meta name=viewport content=initial-scale=1>
-	<style>
-		html { overflow-x:hidden; }
-		body {
-			overflow-x:hidden;
-
-			font-family: Times New Roman;
-			font-size: 0.95em;
-			letter-spacing: -0.005em;
-			line-height: 1.58;
-
-			max-width: 700px;
-			margin: 0 auto;
-			padding: 0 5px 50px 5px;
-		}
-		h1 {
-			font-weight: 600;
-		}
-		h1 a {
-			text-decoration: none;
-		}
-		h2 {
-			font-weight: 400;
-			margin: 5px 0 5px 0;
-		}
-		a:link {color: #24303d}
-		a:visited {color: #24303d}
-		img {
-			background: transparent;
-			width: 98vw;
-			max-width: 100%;
-		}
-		.logos img {
-			background: transparent;
-			padding: 0 5px 0 0;
-			max-width: 100px;
-		}
-		.logos {
-			display: flex;
-		}
-		ul {
-			list-style-type: "- ";
-		}
-		pre {
-			margin: 0 0 20px 0;
-			padding: 5px;
-			background-color: whitesmoke;
-			overflow: scroll;
-		}
-		details {
-			margin: 10px 0 0 0;
-		}
-		summary h2 {
-			display: inline;
-		}
-		.footer {
-			font-size: small;
-		}
-		@media (prefers-color-scheme: dark) {
-			body {
-				background-color: rgb(40,40,41);
-				color: rgb(220,220,220);
-			}
-			a:link {color: rgb(220,220,220);}
-			a:visited {color: rgb(220,220,220);}
-			img { background-color: whitesmoke;}
-        	pre {background-color: #202020;}
-		}
-	</style>
-</head>
-<body>
-{{Body}}
-<hr />
-<div class="footer">
-	<a href="/">Home</a>
-	<span>,</span>
-	<a href="/about">About</a>
-	<span>,</span>
-	<a href="/shovel/docs">Shovel Docs</a>
-	<span>,</span>
-	<a href="https://twitter.com/indexsupply">@indexsupply</a>
-	<span>,</span>
-	<a href="https://github.com/indexsupply/code">github.com/indexsupply</a>
-</div>
-</body>
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Index Supply</title>
+        <style>
+            body {
+                font-family: Times New Roman;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            a:link,
+            a:visited,
+            a:hover,
+            a:active {
+                color: blue;
+                text-decoration: none;
+            }
+            p {
+                margin: 10px 0 0 0;
+            }
+            .navigation {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 15%;
+                font-size: large;
+                display: flex;
+                flex-direction: column;
+            }
+            .navigation div {
+                padding: 10px 0 0 10px;
+            }
+            .navigation h2 {
+                font-size: xx-large;
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                margin: 0;
+                padding: 0 0 0 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="navigation">
+            <h2><a href="https://www.indexsupply.net/login">Sign Up</a></h2>
+            <div>
+                <a href="/">Home</a>, <a href="https://www.indexsupply.net/docs">Docs</a>,
+                <a href="https://www.indexsupply.net">Query</a>
+            </div>
+        </div>
+        <main>
+            <p>
+                Index Supply was founded in October 2022 to help teams access Ethereum data. The company is bootstrapped by its founder and open source grants.
+                <a href="https://warpcast.com/ryansmith">Ryan</a>, the founder, started his career as an engineer at Heroku in 2010 and in 2013 co-founded
+                Chain. Index Supply makes money by selling access to its hosted <a href="https://www.indexsupply.net">SQL API</a>.
+            </p>
+        </main>
+    </body>
+    <script></script>
 </html>
