@@ -410,6 +410,7 @@ AND   t2.tokenId   is null
 
         function apiURL(path, params = new URLSearchParams()) {
             params.set("chain", 8543);
+            params.set("api-key", "b19b3c99078e67ba0a259e06a08cab21");
             return `https://api.indexsupply.net${path}?${params}`;
         }
 
