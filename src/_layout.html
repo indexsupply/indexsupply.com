@@ -6,8 +6,9 @@
         <style>
             body {
                 font-family: Times New Roman;
-                max-width: 800px;
-                margin: 0 auto;
+                max-width: 900px;
+                display: flex;
+                flex-direction: row;
             }
             a:link,
             a:visited,
@@ -16,29 +17,23 @@
                 color: blue;
                 text-decoration: none;
             }
-            .navigation {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 15%;
+            #left {
+                margin: 15px 0 0 0;
+                width: 20%;
                 font-size: large;
                 display: flex;
                 flex-direction: column;
             }
-            .navigation div {
-                padding: 10px 0 0 10px;
-            }
-            .navigation h2 {
+            #left h2 {
                 font-size: xx-large;
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
                 margin: 0;
-                padding: 0 0 0 10px;
+                padding: 0;
             }
-            .header {
-                width: 100%;
-                margin: 0 0 0 0;
+            #right {
+                width: 80%;
             }
-            .header h1 {
+            #right h1 {
                 width: 100%;
                 white-space: nowrap;
                 /* size fills horizontal space*/
@@ -48,24 +43,24 @@
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
                 margin: 0;
             }
-            .header h1 a {
+            #right h1 a {
                 color: #000000;
                 text-decoration: none;
             }
             .events {
                 resize: none;
                 border: none;
-                width: 80%;
-                height: 20px;
-                font-size: large;
+                width: 100%;
+                font-size: 0.9em;
                 font-family: monospace;
             }
             .query {
                 resize: none;
                 border: none;
-                width: 80%;
-                height: 75px;
-                font-size: large;
+                width: 100%;
+                height: 80px;
+                padding: 5px 0 5px 0;
+                font-size: 0.9em;
                 font-family: monospace;
             }
             .response {
@@ -75,7 +70,7 @@
             }
             .response table {
                 table-layout: fixed;
-                width: 60%;
+                width: 100%;
             }
             .response th {
                 font-size: medium;
@@ -88,7 +83,8 @@
                 text-overflow: ellipsis;
             }
             .point {
-                margin: 0 0 30px 0;
+                margin: 0 0 10px 0;
+                padding: 0 0 20px 10px;
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
@@ -96,9 +92,10 @@
             }
             .point h2 {
                 font-size: 2.5em;
-                font-weight: normal;
+                font-weight: bolder;
                 width: 100%;
-                margin-bottom: 0;
+                margin: 0 0 0 -10px;
+                border-bottom: 1px inset gainsboro;
             }
             .point p {
                 font-size: 1.3em;
@@ -110,7 +107,7 @@
                 width: 100%;
             }
             #latency span {
-                color: green;
+                color: rgba(0, 255, 127, 1);
                 font-family: monospace;
                 font-size: 3em;
             }
@@ -192,14 +189,14 @@
             .terminal {
                 font-size: small;
                 padding: 0 5px 5px 5px;
-                border-top: 20px solid black;
+                border-top: 20px solid darkslategray;
                 border-radius: 10px;
                 box-shadow:
                     rgba(17, 17, 26, 0.1) 0px 4px 16px,
                     rgba(17, 17, 26, 0.1) 0px 8px 24px,
                     rgba(17, 17, 26, 0.1) 0px 16px 56px;
-                color: whitesmoke;
-                background-color: #28282b;
+                color: darkslategrey;
+                background-color: cornsilk;
             }
             .shadow {
                 padding: 5px;
@@ -211,23 +208,25 @@
         </style>
     </head>
     <body>
-        <div class="header">
-            <h1><a href="/">Index Supply</a></h1>
-        </div>
-        <div class="navigation">
+        <div id="left">
             <h2><a href="https://www.indexsupply.net/login">Sign Up</a></h2>
             <div>
                 <a href="/about">About</a>, <a href="https://www.indexsupply.net/docs">Docs</a>,
                 <a href="https://www.indexsupply.net">Query</a>
             </div>
         </div>
-        <main>
+        <div id="right">
+            <h1><a href="/">Index Supply</a></h1>
+            <h2>A New Ethereum Indexer</h2>
             <div id="simple" class="point">
                 <form action="https://www.indexsupply.net/query" id="simple-request" method="POST">
-                    <h2>🗄️ It's Simple</h2>
+                    <h2>It's Simple</h2>
                     <p>There is <strong>no</strong> indexing step because the entire chain is already indexed.</p>
                     <div class="shadow">
                         <textarea class="events" type="text" spellcheck="false">Transfer(address indexed from, address indexed to, uint value)</textarea>
+                    </div>
+                    <p><em>↑ Event Signature ↓ SQL Query</em></p>
+                    <div class="shadow">
                         <textarea class="query" type="text" spellcheck="false">
 select block_num block, "from", "to"
 from transfer
@@ -236,7 +235,7 @@ limit 3
                         </textarea>
                     </div>
                 </form>
-                <p>An Event Signature and a SQL Query is all you need to instantly access indexed data.</p>
+                <p>Instantly access indexed data.</p>
                 <div class="response">
                     <table>
                         <thead></thead>
@@ -245,12 +244,12 @@ limit 3
                 </div>
             </div>
             <div id="latency" class="point">
-                <h2>🚄 It's Fast</h2>
+                <h2>It's Fast</h2>
                 <p>Our entire stack is dialed for performance. Your queries will be fast:</p>
                 <span></span>
             </div>
             <div id="live" class="point">
-                <h2>📡 It's Live</h2>
+                <h2>It's Live</h2>
                 <p>Any query can be turned into a <strong>Live Query</strong>. Keep your end-user's browser in sync.</p>
                 <textarea class="events hidden">Transfer(address indexed from, address indexed to, uint value)</textarea>
                 <textarea class="query hidden">select block_num, "from", "to" from transfer order by block_num desc limit 1</textarea>
@@ -262,7 +261,7 @@ limit 3
                 </div>
             </div>
             <div id="api" class="point">
-                <h2>🧰 It's an API</h2>
+                <h2>It's an API</h2>
                 <p>A simple JSON over HTTP API that is fast and easy to use.</p>
                 <div class="terminal">
                     <pre>
@@ -291,7 +290,7 @@ limit 3
                 </div>
             </div>
             <div id="powerful" class="point">
-                <h2>🧬 It's Powerful</h2>
+                <h2>It's Powerful</h2>
                 <p>Harness the power of SQL with JOINS, SUM, MAX, WHERE, and much more!</p>
                 <div class="shadow">
                     <code>
@@ -310,14 +309,14 @@ and t2.tokenId is null
                 </div>
             </div>
             <div id="cost" class="point">
-                <h2>💰 It's Low Cost</h2>
+                <h2>It's Low Cost</h2>
                 <p>We engineered a system that keeps cost low and we pass the savings on to you!</p>
                 <div id="menu">
                     <div class="option left" name="indie">
                         <h3>Indie</h3>
                         <ul>
                             <li>2 Chains</li>
-                            <li>5 requests per second per client</li>
+                            <li>5 requests/second/client</li>
                             <li>100 connected clients</li>
                             <li>Best Effort Support</li>
                         </ul>
@@ -327,7 +326,7 @@ and t2.tokenId is null
                         <h3>Pro</h3>
                         <ul>
                             <li>Unlimited Chains</li>
-                            <li>10 requests per second per client</li>
+                            <li>10 requests/second/client</li>
                             <li>1,000 connected clients</li>
                             <li>Same Day Support</li>
                         </ul>
@@ -349,7 +348,7 @@ and t2.tokenId is null
                 <h2>Get Started</h2>
                 <p>Sign up for an account and start making queries today!</p>
             </div>
-        </main>
+        </div>
     </body>
     <script>
         function addHeaderRow(thead, row) {
