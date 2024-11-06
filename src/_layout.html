@@ -54,19 +54,27 @@
                 resize: none;
                 border: none;
                 width: 100%;
-                height: 80px;
+                height: 100px;
                 padding: 5px 0 5px 0;
                 font-size: 0.9em;
                 font-family: monospace;
+            }
+            #submit-query {
+                margin: 10px 0 0 0;
+                text-align: right;
+            }
+            form input[type="submit"] {
+                text-align: right;
             }
             .response {
                 font-family: monospace;
                 padding: 5px;
                 height: 95px;
+                width: 100%;
                 box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
             }
             .response table {
-                table-layout: fixed;
+                table-layout: auto;
                 width: 100%;
             }
             .response th {
@@ -217,18 +225,23 @@
             <div id="simple" class="point">
                 <form action="https://www.indexsupply.net/query" id="simple-request" method="POST">
                     <h2>It's Simple</h2>
-                    <p>There is <strong>no</strong> indexing step because the entire chain is already indexed.</p>
+                    <p>There is <strong>no</strong> indexing step because the entire chain is already indexed. <br />Any Event. Any Query. Instant results.</p>
                     <div class="shadow">
                         <textarea class="events" type="text" spellcheck="false">Transfer(address indexed from, address indexed to, uint value)</textarea>
                     </div>
                     <p><em>↑ Event Signature ↓ SQL Query</em></p>
                     <div class="shadow">
                         <textarea class="query" type="text" spellcheck="false">
-select block_num block, "from", "to"
-from transfer
-order by block_num desc
-limit 3
+SELECT block_num block, tx_hash, "to", value               --block_num, tx_hash, log_idx, address available
+FROM transfer                                              --transfer is provided by ^ event
+WHERE address = 0x0555E30da8f98308EdB960aa94C0Db47230d2B9c --WBTC on Base
+AND   "from"  = 0                                          --New BTC
+ORDER BY block_num DESC
+LIMIT 3
                         </textarea>
+                    </div>
+                    <div id="submit-query">
+                        <input type="submit" value="Query" />
                     </div>
                 </form>
                 <p>Instantly access indexed data.</p>
@@ -287,18 +300,28 @@ limit 3
             </div>
             <div id="powerful" class="point">
                 <h2>It's Powerful</h2>
-                <p>Harness the power of SQL with JOINS, SUM, MAX, WHERE, and much more!</p>
+                <p>Harness the power of SQL with JOINS, SUM, MAX, WHERE, and <a href="https://www.indexsupply.net/docs#sql">much more</a>!</p>
                 <div class="shadow">
                     <code>
                         <pre>
-select t1."to", t1.tokenId, t1.block_num
-from transfer t1
-left join transfer t2
-on t1.tokenId = t2.tokenId
-and t1.block_num < t2.block_num
-and t1.address = t2.address
-where t1.address = 0xE81b94b09B9dE001b75f2133A0Fb37346f7E8BA4
-and t2.tokenId is null
+SELECT t1."to", t1.tokenId, t1.block_num
+FROM transfer t1
+-- JOIN transfer to itself
+-- and match each row on the left
+-- with a row on the right based
+-- on: address and tokenId and
+-- where the table on the right has a higher
+-- block_num than the table on the left.
+-- If there is no row with a block_num that is higher
+-- the right side of the join will be null.
+-- This means that we have the "latest" transfer
+-- of the token and the "to"
+LEFT JOIN transfer t2
+ON    t1.address   = t2.address
+AND   t1.tokenId   = t2.tokenId
+AND   t1.block_num < t2.block_num
+WHERE t1.address   = 0xE81b94b09B9dE001b75f2133A0Fb37346f7E8BA4
+AND   t2.tokenId   is null
                     </pre
                         >
                     </code>
@@ -480,6 +503,11 @@ and t2.tokenId is null
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            document.querySelector("#submit-query input").addEventListener("click", (event) => {
+                document.querySelector("#live .query").value = document.querySelector("#simple .query").value;
+                document.querySelector("#live .events").value = document.querySelector("#simple .events").value;
+                submitQuery(event);
+            });
             submitQuery();
         });
     </script>
