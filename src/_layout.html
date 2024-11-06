@@ -6,9 +6,10 @@
         <style>
             body {
                 font-family: Times New Roman;
-                max-width: 900px;
+                max-width: 800px;
+                margin: 0 auto;
                 display: flex;
-                flex-direction: row;
+                flex-direction: column;
             }
             a:link,
             a:visited,
@@ -17,23 +18,18 @@
                 color: blue;
                 text-decoration: none;
             }
-            #left {
-                margin: 15px 0 0 0;
-                width: 20%;
+            #top {
+                text-align: right;
+                padding: 10px 0 0 0;
+                height: 30px;
+                width: 100%;
                 font-size: large;
-                display: flex;
-                flex-direction: column;
             }
-            #left h2 {
-                font-size: xx-large;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-                margin: 0;
-                padding: 0;
+            #bottom {
+                margin: 0 0 0 0;
+                width: 100%;
             }
-            #right {
-                width: 80%;
-            }
-            #right h1 {
+            #bottom h1 {
                 width: 100%;
                 white-space: nowrap;
                 /* size fills horizontal space*/
@@ -43,7 +39,7 @@
                 text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
                 margin: 0;
             }
-            #right h1 a {
+            #bottom h1 a {
                 color: #000000;
                 text-decoration: none;
             }
@@ -209,14 +205,13 @@
         </style>
     </head>
     <body>
-        <div id="left">
-            <h2><a href="https://www.indexsupply.net/login">Sign Up</a></h2>
+        <div id="top">
             <div>
-                <a href="/about">About</a>, <a href="https://www.indexsupply.net/docs">Docs</a>,
+                <a href="https://www.indexsupply.net/login">Sign Up</a>, <a href="/about">About</a>, <a href="https://www.indexsupply.net/docs">Docs</a>,
                 <a href="https://www.indexsupply.net">Query</a>
             </div>
         </div>
-        <div id="right">
+        <div id="bottom">
             <h1><a href="/">Index Supply</a></h1>
             <h2>A New Ethereum Indexer</h2>
             <div id="simple" class="point">
