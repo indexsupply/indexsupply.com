@@ -117,10 +117,18 @@
             #latency {
                 width: 100%;
                 align-items: baseline;
+                justify-content: flex-start;
+                gap: 20px;
             }
             .latency-data {
                 opacity: 0;
-                width: 90px;
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-evenly;
+                gap: 15px;
+            }
+            .latency-data-item {
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -273,12 +281,14 @@ LIMIT 3
                 <h2>It's Fast</h2>
                 <p>Our entire stack is dialed for performance. Your queries will be fast:</p>
                 <div class="latency-data">
-                    <div><span title="from us-east-2" id="latency-numbers-client"></span></div>
-                    <div><span title="from us-east-2" class="label">client</span></div>
-                </div>
-                <div class="latency-data">
-                    <div><span id="latency-numbers-server"></span></div>
-                    <div><span class="label">server</span></div>
+                    <div class="latency-data-item">
+                        <div><span title="from us-east-2" id="latency-numbers-client"></span></div>
+                        <div><span title="from us-east-2" class="label">client</span></div>
+                    </div>
+                    <div>
+                        <div><span id="latency-numbers-server"></span></div>
+                        <div><span class="label">server</span></div>
+                    </div>
                 </div>
             </div>
             <div id="live" class="point">
