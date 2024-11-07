@@ -173,6 +173,7 @@
                 border: 2px solid green;
             }
             .option {
+                cursor: pointer;
                 width: 100%;
                 border: 1px solid gray;
                 box-sizing: border-box;
@@ -404,7 +405,11 @@ AND   t2.tokenId   is null
             </div>
             <div id="get-started" class="point">
                 <h2>Get Started</h2>
-                <p>Sign up for an account and start making queries today!</p>
+                <p>
+                    Start building queries for free (rate limited to 5 per minute) on the <a href="https://indexsupply.net">Query Page</a>. Next you can turn
+                    your queries into API requests and use your account's API key for production grade access.
+                </p>
+                <p><a href="https://www.indexsupply.net/login">Sign up</a> for an account and start making queries today!</p>
             </div>
         </div>
     </body>
@@ -549,6 +554,11 @@ AND   t2.tokenId   is null
         }
 
         document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".option").forEach((div) => {
+                div.addEventListener("click", (event) => {
+                    window.location.href = "https://www.indexsupply.net/login";
+                });
+            });
             document.querySelector("#submit-query input").addEventListener("click", (event) => {
                 document.querySelector("#live .query").value = document.querySelector("#simple .query").value;
                 document.querySelector("#live .events").value = document.querySelector("#simple .events").value;
