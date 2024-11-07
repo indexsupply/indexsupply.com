@@ -88,6 +88,7 @@
                 text-align: left;
             }
             .response td {
+                min-width: 100px;
                 max-width: 200px;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -251,8 +252,7 @@
                         <textarea class="query" type="text" spellcheck="false">
 SELECT block_num block, tx_hash, "to", value               --block_num, tx_hash, log_idx, address available
 FROM transfer                                              --transfer is provided by ^ event
-WHERE address = 0x0555E30da8f98308EdB960aa94C0Db47230d2B9c --WBTC on Base
-AND   "from"  = 0                                          --New BTC
+WHERE address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 --USDC on Base
 ORDER BY block_num DESC
 LIMIT 3
                         </textarea>
@@ -286,7 +286,7 @@ LIMIT 3
                 <p>Any query can be turned into a <strong>Live Query</strong>. Keep your end-user's browser in sync.</p>
                 <textarea class="events hidden">Transfer(address indexed from, address indexed to, uint value)</textarea>
                 <textarea class="query hidden">
-SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x0555E30da8f98308EdB960aa94C0Db47230d2B9c AND "from" = 0 ORDER BY block_num DESC LIMIT 3</textarea
+SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 ORDER BY block_num DESC LIMIT 1</textarea
                 >
                 <div class="response">
                     <table>
@@ -500,10 +500,11 @@ AND   t2.tokenId   is null
                 console.log(`downloaded ${result.length} records`);
                 if (result.length > 0) {
                     let colNames = result.shift();
+                    let data = result.slice(0, 3);
                     addHeaderRow(document.querySelector("#simple .response table thead"), colNames);
                     addHeaderRow(document.querySelector("#live .response table thead"), colNames);
-                    addRow(document.querySelector("#simple .response table tbody"), result.slice(0, 3), true);
-                    addRow(document.querySelector("#live .response table tbody"), result.slice(0, 3), true);
+                    addRow(document.querySelector("#simple .response table tbody"), data, true);
+                    addRow(document.querySelector("#live .response table tbody"), data, true);
                     updateBlockHeight(height, clientLatency, response.headers.get("Latency"));
                     startHandler();
                 } else {
