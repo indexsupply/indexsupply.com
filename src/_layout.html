@@ -93,8 +93,8 @@
                 text-overflow: ellipsis;
             }
             .point {
-                margin: 0 0 10px 0;
-                padding: 0 0 20px 10px;
+                margin: 0;
+                padding: 0 0 30px 0;
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
@@ -104,7 +104,7 @@
                 font-size: 2.5em;
                 font-weight: bolder;
                 width: 100%;
-                margin: 0 0 0 -10px;
+                margin: 0;
                 border-bottom: 1px inset gainsboro;
             }
             .point p {
@@ -115,11 +115,22 @@
             }
             #latency {
                 width: 100%;
+                align-items: baseline;
             }
-            #latency span {
+            .latency-data {
+                opacity: 0;
+                width: 90px;
+                display: flex;
+                flex-direction: column;
+            }
+            .latency-data span.label {
+                font-size: 0.8em;
+                color: slategray;
+            }
+            .latency-data span {
                 color: rgba(0, 255, 127, 1);
                 font-family: monospace;
-                font-size: 3em;
+                font-size: 2em;
             }
             #api {
                 display: block;
@@ -260,7 +271,14 @@ LIMIT 3
             <div id="latency" class="point">
                 <h2>It's Fast</h2>
                 <p>Our entire stack is dialed for performance. Your queries will be fast:</p>
-                <span></span>
+                <div class="latency-data">
+                    <div><span title="from us-east-2" id="latency-numbers-client"></span></div>
+                    <div><span title="from us-east-2" class="label">client</span></div>
+                </div>
+                <div class="latency-data">
+                    <div><span id="latency-numbers-server"></span></div>
+                    <div><span class="label">server</span></div>
+                </div>
             </div>
             <div id="live" class="point">
                 <h2>It's Live</h2>
@@ -440,11 +458,14 @@ AND   t2.tokenId   is null
         }
 
         let blockHeight = 0;
-        function updateBlockHeight(height, latency) {
+        function updateBlockHeight(height, clientLatency, latency) {
             blockHeight = height;
+            if (clientLatency) {
+                document.querySelectorAll(".latency-data").forEach((div) => (div.style.opacity = 1));
+                document.querySelector("#latency-numbers-client").textContent = clientLatency;
+            }
             if (latency) {
-                document.querySelector("#latency span").style.display = "inline";
-                document.querySelector("#latency span").textContent = latency;
+                document.querySelector("#latency-numbers-server").textContent = latency;
             }
         }
 
@@ -461,6 +482,7 @@ AND   t2.tokenId   is null
             }
             resetResponse();
             closeHandler();
+            let start = performance.now();
             const response = await fetch(apiURL("/query"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -471,6 +493,7 @@ AND   t2.tokenId   is null
                 console.log(message);
             } else {
                 const data = await response.json();
+                let clientLatency = `${Math.ceil(performance.now() - start)}ms`;
                 let height = data["block_height"];
                 let result = data["result"][0];
                 console.log(`downloaded ${result.length} records`);
@@ -480,7 +503,7 @@ AND   t2.tokenId   is null
                     addHeaderRow(document.querySelector("#live .response table thead"), colNames);
                     addRow(document.querySelector("#simple .response table tbody"), result.slice(0, 3), true);
                     addRow(document.querySelector("#live .response table tbody"), result.slice(0, 3), true);
-                    updateBlockHeight(height, response.headers.get("Latency"));
+                    updateBlockHeight(height, clientLatency, response.headers.get("Latency"));
                     startHandler();
                 } else {
                     printInfo("no rows");
