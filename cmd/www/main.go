@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -68,19 +69,33 @@ func isdir(p string) bool {
 	return fi.IsDir()
 }
 
+func html(p string) []byte {
+	if isdir(p) {
+		p = path.Join(p, "index.html")
+	}
+	f, err := os.Open(p)
+	if err != nil {
+		return nil
+	}
+	b, err := ioutil.ReadAll(f)
+	check(err)
+	return b
+}
+
 func serve(w http.ResponseWriter, r *http.Request) {
 	p := path.Join(dir, r.URL.Path)
+
+	if res := html(p); len(res) > 0 {
+		fmt.Fprint(w, string(res))
+		return
+	}
+
 	if isdir(p) {
 		p = path.Join(p, "index.md")
 	} else {
 		p += ".md"
 	}
-	f, err := os.Open(p)
-	if err != nil {
-		http.Error(w, err.Error(), 404)
-		return
-	}
-	res, err := render(f)
+	res, err := render(p)
 	if err != nil {
 		http.Error(w, err.Error(), 404)
 		return
@@ -88,7 +103,13 @@ func serve(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(res))
 }
 
-func render(f *os.File) ([]byte, error) {
+func render(p string) ([]byte, error) {
+	f, err := os.Open(p)
+	if err != nil {
+		return nil, fmt.Errorf("opening file %s: %w", p, err)
+	}
+	defer f.Close()
+
 	src, err := io.ReadAll(f)
 	if err != nil {
 		return nil, fmt.Errorf("reading %s: %w", f.Name(), err)
@@ -169,34 +190,37 @@ func upload(p string, fi os.FileInfo, err error) error {
 	case fi.Name() == "index.md":
 		return nil
 	case fi.IsDir():
-		f, err := os.Open(path.Join(p, "index.md"))
+		b, err := render(path.Join(p, "index.md"))
 		if err != nil {
 			fmt.Printf("skipping %s: %s\n", p, err)
 			return nil
-		}
-		defer f.Close()
-		b, err := render(f)
-		if err != nil {
-			return fmt.Errorf("rendering file %s: %w", f.Name(), err)
 		}
 		var key string
 		key = fmt.Sprintf("%s/index.html", p)
 		key = strings.TrimPrefix(key, dir)
 		return putFile(b, bucket, key)
 	case filepath.Ext(p) == ".md":
+		b, err := render(p)
+		if err != nil {
+			fmt.Printf("skipping %s: %s\n", p, err)
+			return nil
+		}
+		var key string
+		key = strings.TrimPrefix(p, dir)
+		key = strings.TrimSuffix(key, filepath.Ext(key))
+		return putFile(b, bucket, key)
+	case filepath.Ext(p) == ".html":
 		f, err := os.Open(p)
 		if err != nil {
 			fmt.Printf("skipping %s: %s\n", f.Name(), err)
 			return nil
 		}
 		defer f.Close()
-		b, err := render(f)
+		b, err := io.ReadAll(f)
 		if err != nil {
-			return fmt.Errorf("rendering file %s: %w", f.Name(), err)
+			return fmt.Errorf("reading %s: %w", f.Name(), err)
 		}
-		var key string
-		key = strings.TrimPrefix(p, dir)
-		key = strings.TrimSuffix(key, filepath.Ext(key))
+		key := strings.TrimPrefix(p, dir)
 		return putFile(b, bucket, key)
 	default:
 		return nil
