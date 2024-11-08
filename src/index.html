@@ -5,7 +5,11 @@
         <title>Index Supply</title>
         <style>
             body {
-                font-family: Times New Roman;
+                font-family: system, sans-serif;
+                font-size: 0.95em;
+                letter-spacing: -0.005em;
+                line-height: 1.58;
+
                 max-width: 800px;
                 margin: 0 auto;
                 display: flex;
@@ -30,21 +34,17 @@
                 width: 100%;
             }
             #bottom h1 {
-                width: 100%;
-                white-space: nowrap;
-                /* size fills horizontal space*/
-                font-size: 83.5px;
-                font-weight: 900;
-                letter-spacing: -3px;
-                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-                margin: 0;
+                font-size: 4.5em;
+                font-weight: bolder;
+                margin: 0 0 -15px -2px;
+                padding: 0;
             }
             #bottom h1 a {
                 color: #000000;
                 text-decoration: none;
             }
             #tagline {
-                margin: 0 0 20px 0;
+                margin: 0 0 40px 0;
                 font-weight: normal;
                 color: gray;
             }
@@ -103,15 +103,15 @@
             }
             .point {
                 margin: 0;
-                padding: 0 0 30px 0;
+                padding: 0 0 50px 0;
                 display: flex;
                 flex-wrap: wrap;
                 align-items: center;
                 justify-content: space-between;
             }
             .point h2 {
-                font-size: 2.5em;
-                font-weight: bolder;
+                font-size: 2em;
+                font-weight: bold;
                 width: 100%;
                 margin: 0;
                 border-bottom: 1px inset gainsboro;
@@ -282,7 +282,10 @@ LIMIT 3
             </div>
             <div id="live" class="point">
                 <h2>It's Live</h2>
-                <p>Any query can be turned into a <strong>Live Query</strong>. Keep your end-user's browser in sync with <em>SSE</em>.</p>
+                <p>
+                    Any query can be turned into a <strong>Live Query</strong>. <br />Keep your server <em>or</em> your user's browser in sync with
+                    <em>SSE</em>.
+                </p>
                 <textarea class="events hidden">Transfer(address indexed from, address indexed to, uint value)</textarea>
                 <textarea class="query hidden">
 SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 ORDER BY block_num DESC LIMIT 1</textarea
@@ -296,7 +299,7 @@ SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833
             </div>
             <div id="latency" class="point">
                 <h2>It's Fast</h2>
-                <p>Our entire stack is dialed for performance. Your queries will be fast:</p>
+                <p>Our stack is dialed for performance. Your queries will be fast:</p>
                 <div class="latency-data">
                     <div class="latency-data-item">
                         <div><span title="from us-east-2" id="latency-numbers-client"></span></div>
@@ -307,9 +310,7 @@ SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833
                         <div><span class="label">server</span></div>
                     </div>
                 </div>
-                <span style="color: gray"
-                    >ⓘ We run our servers in us-east-2. Dedicated plans include faster hardware and configurable datacenter locations.</span
-                >
+                <span style="color: gray">ⓘ We run our servers in us-east-2. Dedicated plan includes faster hardware and specific datacenter locations.</span>
             </div>
             <div id="api" class="point">
                 <h2>It's an API</h2>
