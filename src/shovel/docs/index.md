@@ -997,6 +997,7 @@ Shovel will optimize its Ethereum JSON RPC API method choice based on the data t
 | tx_max_priority_fee_per_gas  | uint256         | numeric          | `b`              |
 | tx_max_fee_per_gas           | uint256         | numeric          | `b`              |
 | tx_effective_gas_price       | uint256         | numeric          | `r`              |
+| tx_contract_address          | bytes           | bytea            | `r`              |
 | log_idx                      | int             | int              | `l, r`           |
 | log_addr                     | address         | bytea            | `l, r`           |
 | event data                   | n/a             | n/a              | `l`              |
@@ -1030,7 +1031,7 @@ For all other data: blocks, transactions, receipts, and traces; Shovel will down
 The following are a list of filter fields that can be embedded in a `block` or `event` item.
 
 - **filter_op** Must be: `contains` or `!contains` when using `filter_ref` or can be: `contains`, `!contains`, `eq`, `ne`, `gt`, or `lt` when using `filter_arg`.
-- **filter_arg** Not required when using `filter_ref`. Use `filter_arg` when you want to filter on static data. Must be an array of strings.
+- **filter_arg** Not required when using `filter_ref`. Use `filter_arg` when you want to filter on static data. Must be an array of strings. The string values will be decoded depending on the value of comparison. Namely, a string with a `0x` prefix will be decoded into `bytes`, a decimal string will be decoded into `uint` or `int`, a string of utf8 characters will be decoded into a `string`, and an empty string will be decoded as an empty value of the type being compared.
 - **filter_ref** Not required when using `filter_arg`. Use `filter_ref` if you want to filter based on dynamic data that has been created by other integrations. For example, this is useful for indexing events from factory created contracts.
     - **integration** Must be the name of an integration. This reference is used to determine the table name used for the filter data.
     - **column** Must be a column name defined in the integration's table.
