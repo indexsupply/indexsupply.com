@@ -224,6 +224,10 @@
                 text-align: center;
                 font-size: large;
             }
+            #pricing-details {
+                font-size: small;
+                margin-top: 40px;
+            }
             .highlight {
                 background-color: lightyellow;
                 transition: background-color 0.25s ease-in-out;
@@ -376,39 +380,51 @@ AND   t2.tokenId   is null
                 </div>
             </div>
             <div id="cost" class="point">
-                <h2>It's Low Cost</h2>
+                <h2>It's Cost Effective</h2>
                 <p>We engineered a system that keeps cost low and we pass the savings on to you!</p>
                 <div id="menu">
                     <div class="option left" name="indie">
-                        <h3>Indie</h3>
-                        <ul>
-                            <li>5 requests/second/client</li>
-                            <li>5 second request timeout</li>
-                            <li>10 concurrent connections</li>
-                            <li>Best Effort Support</li>
-                        </ul>
-                        <div class="price">$50 per month</div>
+                    <h3>Indie</h3>
+                    <ul>
+                        <li>5 requests/second/client</li>
+                        <li>5 second query timeout</li>
+                        <li>10 active connections</li>
+                        <li>100,000 queries per day</li>
+                        <li>Hard limit</li>
+                        <li>No overage</li>
+                        <li>Best Effort Support</li>
+                    </ul>
+                    <div class="price">$50 per month</div>
                     </div>
                     <div class="option middle" name="pro">
-                        <h3>Pro</h3>
-                        <ul>
-                            <li>10 requests/second/client</li>
-                            <li>10 second request timeout</li>
-                            <li>200 concurrent connections</li>
-                            <li>Same Day Support</li>
-                        </ul>
+                    <h3>Pro</h3>
+                    <ul>
+                        <li>10 requests/second/client</li>
+                        <li>10 second request timeout</li>
+                        <li>Unlimited connections</li>
+                        <li>500,000 queries per day</li>
+                        <li>Soft limit</li>
+                        <li>500,000 additional queries $125</li>
+                        <li>Same Day Support</li>
+                    </ul>
                         <div class="price">$250 per month</div>
                     </div>
                     <div class="option right" name="extreme">
                         <h3>Dedicated</h3>
                         <ul>
-                            <li>Custom Chains</li>
+                            <li>Cross Chain Queries</li>
+                            <li>Block and Transaction Data</li>
+                            <li>Custom Indexes</li>
+                            <li>Custom Endpoints</li>
                             <li>Custom Performance</li>
-                            <li>Custom Server Configuration</li>
+                            <li>No Limits</li>
                             <li>On-call Support</li>
                         </ul>
                         <div class="price">Starting at $2,000 per month</div>
                     </div>
+                </div>
+                <div id="pricing-details">
+                    <p>An active connection is a unique client IP connected to api.indexsupply.net. Each request may contain multiple queries. Live queries consume a connection and execute once per new block for their duration, and each execution triggers a billable query.</p>
                 </div>
             </div>
             <div id="get-started" class="point">
