@@ -326,27 +326,28 @@ SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833
                 <p>A simple JSON over HTTP API that is fast and easy to use.</p>
                 <div class="terminal">
                     <pre>
-% curl -G https://api.indexsupply.net/query \
-    --data-urlencode 'chain=8453' \
-    --data-urlencode 'query=select "from", "to", tokens from transfer limit 1' \
-    --data-urlencode 'event_signatures=Transfer(address indexed from, address indexed to, uint tokens)' \
-    | jq .
+% curl 'https://api.indexsupply.net/v2/query?api-key=secret' \
+    -G \
+    --data-urlencode 'query=select tokens from transfer where chain = 8453 limit 1' \
+    --data-urlencode 'signatures=Transfer(address indexed from, address indexed to, uint tokens)'
 
-{
-    "block_height": 18479546,
-    "result": [[
+    [
+    {
+    "cursor": "8453-29772171",
+    "columns": [
+        {"name": "from", "pgtype": "bytea"},
+        {"name": "to", "pgtype": "bytea"},
+        {"name": "tokens", "pgtype": "numeric"}
+    ],
+    "rows": [
         [
-            "from",
-            "to",
-            "tokens"
-        ],
-        [
-            "0x0000000000000000000000000000000000000000",
-            "0xdaabdaac8073a7dabdc96f6909e8476ab4001b34",
-            "0"
+        "0x0000000000000000000000000000000000000000",
+        "0x0cf966857325db9a9b4dada66e80ce581c18aca1",
+        "0"
         ]
-    ]]
-}
+    ]
+    }
+]
                     </pre>
                 </div>
             </div>
