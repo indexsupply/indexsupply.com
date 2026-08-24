@@ -207,7 +207,7 @@
                         <textarea class="query" type="text" spellcheck="false">
 SELECT block_num block, tx_hash, "to", value               --block_num, tx_hash, log_idx, address available
 FROM transfer                                              --transfer is provided by ^ event
-WHERE address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 --USDC on Base
+WHERE address = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 --USDC on Ethereum
 ORDER BY block_num DESC
 LIMIT 3
                         </textarea>
@@ -226,7 +226,7 @@ LIMIT 3
                 </p>
                 <textarea class="events hidden">Transfer(address indexed from, address indexed to, uint value)</textarea>
                 <textarea class="query hidden">
-SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 ORDER BY block_num DESC LIMIT 1</textarea
+SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 ORDER BY block_num DESC LIMIT 1</textarea
                 >
                 <div class="response">
                     <table>
@@ -257,10 +257,10 @@ SELECT block_num block, tx_hash, "to", value FROM transfer WHERE address = 0x833
                     <pre>
 % curl 'https://api.indexsupply.net/v2/query?api-key=secret' \
     -X GET \
-    --data-urlencode 'query=select tokens from transfer where chain = 8453 limit 1' \
+    --data-urlencode 'query=select tokens from transfer where chain = 1 limit 1' \
     --data-urlencode 'signatures=Transfer(address indexed from, address indexed to, uint tokens)'
 [{
-  "cursor": "8453-29772171",
+  "cursor": "1-25826377",
   "columns": [
     {"name": "from", "pgtype": "bytea"},
     {"name": "to", "pgtype": "bytea"},
@@ -349,7 +349,6 @@ AND   t2.tokenId   is null
         }
 
         function apiURL(path, params = new URLSearchParams()) {
-            params.set("chain", 8453);
             params.set("api-key", "b19b3c99078e67ba0a259e06a08cab21");
             return `https://api.indexsupply.net${path}?${params}`;
         }
@@ -357,7 +356,7 @@ AND   t2.tokenId   is null
         function form2JSON(parent) {
             let events = parent.querySelector(".events").value.split("\n");
             let query = parent.querySelector(".query").value;
-            return [{ event_signatures: events, query: query }];
+            return [{ cursor: `${chain}-0`, signatures: events, query: query }];
         }
 
         function form2queryParams(parent) {
@@ -366,17 +365,21 @@ AND   t2.tokenId   is null
             params.append("query", query);
             let events = parent.querySelector(".events").value.split("\n");
             events.forEach((sig) => {
-                params.append("event_signatures", sig.trim());
+                params.append("signatures", sig.trim());
             });
-            params.set("chain", 8453);
-            params.set("block_height", blockHeight);
+            params.set("cursor", `${chain}-${blockHeight}`);
             return params;
+        }
+
+        function printInfo(msg) {
+            console.log(msg);
         }
 
         function resetResponse() {
             document.querySelectorAll(".response table tr").forEach((row) => row.remove());
         }
 
+        const chain = 1;
         let blockHeight = 0;
         function updateBlockHeight(height, clientLatency, latency) {
             blockHeight = height;
@@ -403,7 +406,7 @@ AND   t2.tokenId   is null
             resetResponse();
             closeHandler();
             let start = performance.now();
-            const response = await fetch(apiURL("/query"), {
+            const response = await fetch(apiURL("/v2/query"), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(form2JSON(document.getElementById("simple"))),
@@ -414,14 +417,13 @@ AND   t2.tokenId   is null
             } else {
                 const data = await response.json();
                 let clientLatency = `${Math.ceil(performance.now() - start)}ms`;
-                let height = data["block_height"];
-                let result = data["result"][0];
-                console.log(`downloaded ${result.length} records`);
-                if (result.length > 0) {
-                    let colNames = result.shift();
-                    let data = result.slice(0, 3);
+                let height = parseInt(data[0].cursor.split("-")[1], 10);
+                let rows = data[0].rows;
+                console.log(`downloaded ${rows.length} records`);
+                if (rows.length > 0) {
+                    let colNames = data[0].columns.map((c) => c.name);
                     addHeaderRow(document.querySelector("#live .response table thead"), colNames);
-                    addRow(document.querySelector("#live .response table tbody"), data, true);
+                    addRow(document.querySelector("#live .response table tbody"), rows.slice(0, 3), true);
                     updateBlockHeight(height, clientLatency, response.headers.get("Latency"));
                     startHandler();
                 } else {
@@ -433,18 +435,17 @@ AND   t2.tokenId   is null
         function startHandler() {
             let liveDiv = document.getElementById("live");
             console.log(`sse start: ${blockHeight}`);
-            sseHandler = new EventSource(apiURL("/query-live", form2queryParams(liveDiv)));
+            sseHandler = new EventSource(apiURL("/v2/query-live", form2queryParams(liveDiv)));
             sseHandler.onmessage = function (event) {
                 let data = JSON.parse(event.data);
-                let newHeight = data["block_height"];
-                let result = data["result"][0];
+                let newHeight = parseInt(data[0].cursor.split("-")[1], 10);
+                let rows = data[0].rows;
                 console.log(`sse latest: ${newHeight}`);
                 if (newHeight <= blockHeight) {
                     console.log("sse nothing new");
                     return;
                 }
-                result.shift();
-                addRow(liveDiv.querySelector(".response table tbody"), result.reverse(), false);
+                addRow(liveDiv.querySelector(".response table tbody"), rows.reverse(), false);
                 updateBlockHeight(newHeight);
             };
             sseHandler.onerror = function (e) {
