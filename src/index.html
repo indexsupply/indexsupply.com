@@ -154,79 +154,8 @@
             #api {
                 display: block;
             }
-            #cost {
-                display: block;
-            }
             #powerful {
                 display: block;
-            }
-            #menu {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                justify-content: flex-start;
-                align-items: flex-start;
-                flex-grow: 1;
-                gap: 20px;
-                margin-top: 30px;
-            }
-            #menu h3 {
-                text-align: center;
-                padding-bottom: 12px;
-                border-bottom: 2px solid black;
-            }
-            .option.current {
-                border: 2px dotted black;
-            }
-            .option.selected {
-                border: 2px solid green;
-            }
-            .option {
-                cursor: pointer;
-                width: 100%;
-                border: 1px solid gray;
-                box-sizing: border-box;
-                padding: 0 0 10px 0;
-                min-height: 240px;
-            }
-            .option.left {
-                box-shadow:
-                    rgba(0, 255, 127, 0.4) -5px 5px,
-                    rgba(0, 255, 127, 0.3) -10px 10px,
-                    rgba(0, 255, 127, 0.2) -15px 15px,
-                    rgba(0, 255, 127, 0.1) -20px 20px,
-                    rgba(0, 255, 127, 0.05) -25px 25px;
-            }
-            .option.middle {
-                box-shadow:
-                    rgba(0, 255, 127, 0.4) 0px 5px,
-                    rgba(0, 255, 127, 0.3) 0px 10px,
-                    rgba(0, 255, 127, 0.2) 0px 15px,
-                    rgba(0, 255, 127, 0.1) 0px 20px,
-                    rgba(0, 255, 127, 0.05) 0px 25px;
-            }
-            .option.right {
-                box-shadow:
-                    rgba(0, 255, 127, 0.4) 5px 5px,
-                    rgba(0, 255, 127, 0.3) 10px 10px,
-                    rgba(0, 255, 127, 0.2) 15px 15px,
-                    rgba(0, 255, 127, 0.1) 20px 20px,
-                    rgba(0, 255, 127, 0.05) 25px 25px;
-            }
-            .option ul {
-                padding-inline-start: 20px;
-            }
-            .option li {
-                padding-left: 0px;
-            }
-            .option .price {
-                width: 100%;
-                text-align: center;
-                font-size: large;
-            }
-            #pricing-details {
-                font-size: small;
-                margin-top: 40px;
             }
             .highlight {
                 background-color: lightyellow;
@@ -373,54 +302,6 @@ AND   t2.tokenId   is null
                     </pre
                         >
                     </code>
-                </div>
-            </div>
-            <div id="cost" class="point">
-                <h2>It's Cost Effective</h2>
-                <p>We engineered a system that keeps cost low and we pass the savings on to you!</p>
-                <div id="menu">
-                    <div class="option left" name="indie">
-                    <h3>Indie</h3>
-                    <ul>
-                        <li>5 requests/second/client</li>
-                        <li>5 second query timeout</li>
-                        <li>10 active connections</li>
-                        <li>3M queries per month</li>
-                        <li>Hard limit</li>
-                        <li>No overage</li>
-                        <li>Best Effort Support</li>
-                    </ul>
-                    <div class="price">$50 per month</div>
-                    </div>
-                    <div class="option middle" name="pro">
-                    <h3>Pro</h3>
-                    <ul>
-                        <li>10 requests/second/client</li>
-                        <li>10 second request timeout</li>
-                        <li>Unlimited connections</li>
-                        <li>15M queries per month</li>
-                        <li>Configurable limit</li>
-                        <li>1M additional queries for $5</li>
-                        <li>Same Day Support</li>
-                    </ul>
-                        <div class="price">$250 per month</div>
-                    </div>
-                    <div class="option right" name="extreme">
-                        <h3>Dedicated</h3>
-                        <ul>
-                            <li>Cross Chain Queries</li>
-                            <li>Block and Transaction Data</li>
-                            <li>Custom Indexes</li>
-                            <li>Custom Endpoints</li>
-                            <li>Custom Performance</li>
-                            <li>No Limits</li>
-                            <li>On-call Support</li>
-                        </ul>
-                        <div class="price">Starting at $2,000 per month</div>
-                    </div>
-                </div>
-                <div id="pricing-details">
-                    <p>An active connection is a unique client IP connected to api.indexsupply.net. Each request may contain multiple queries. Live queries consume a connection and execute once per new block for their duration, and each execution triggers a billable query.</p>
                 </div>
             </div>
             <div id="get-started" class="point">
@@ -572,11 +453,6 @@ AND   t2.tokenId   is null
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll(".option").forEach((div) => {
-                div.addEventListener("click", (event) => {
-                    window.location.href = "https://www.indexsupply.net/login";
-                });
-            });
             document.querySelector("#submit-query input").addEventListener("click", (event) => {
                 document.querySelector("#live .query").value = document.querySelector("#simple .query").value;
                 document.querySelector("#live .events").value = document.querySelector("#simple .events").value;
